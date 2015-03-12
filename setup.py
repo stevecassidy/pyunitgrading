@@ -32,7 +32,7 @@ setup(
     ],
     package_dir={'pyunitgrading':
                  'pyunitgrading'},
-    scripts=['bin/unpack.py', 'bin/runtests.py'],
+    scripts=['scripts/unpack.py', 'scripts/runtests.py'],
     include_package_data=True,
     install_requires=requirements,
     license="BSD",
