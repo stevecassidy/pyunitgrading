@@ -23,7 +23,7 @@ If the zip file contains single file submissions the files are renamed to a give
 
 If the zip file contains archive files they are unpacked within the student's sub-directory if possible. If this fails, the archive is copied to the sub-directory and a warning is printed. 
 
-Usage:
+Usage::
 
     usage: unpack.py [-h] [--expectzip EXPECTZIP] [--targetname TARGETNAME] zipfile targetdir
 
@@ -32,10 +32,9 @@ Usage:
       targetdir             directory to store unpacked files
 
     optional arguments:
-      -h, --help            show this help message and exit
-      --expectzip           does the zip file contain more zip files
-      --targetname TARGETNAME
-                            name for student submission files
+      -h, --help                show this help message and exit
+      --expectzip               does the zip file contain more zip files
+      --targetname TARGETNAME   name for student submission files
 
 runtests.py
 ===========
@@ -45,7 +44,7 @@ Runs a test file for each submission in a zip file.
     Usage: runtests.py <iLearn Zip file> <config file>"
 
 
-The config file is INI format file containing settings for the test run as follows:
+The config file is INI format file containing settings for the test run as follows::
 
     [default]
 
@@ -70,17 +69,5 @@ The tests will be run for each student submission. If there are errors in runnin
 
 
 
-
-
-
-
-
-
-
 * Free software: BSD license
-* Documentation: https://pyunitgrading.readthedocs.org.
 
-Features
---------
-
-* TODO
