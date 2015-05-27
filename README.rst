@@ -52,7 +52,7 @@ The config file is INI format file containing settings for the test run as follo
     targetname: workshop1.py
     testmodule: workshop1test
     modules: workshop1test.py
-    expectzip: True
+    expectzip: yes
     csvname: results.csv
     
 
@@ -60,7 +60,7 @@ The config file is INI format file containing settings for the test run as follo
 * targetname is the name that each submission file is rename to in the student sub-directory, or, if the submissions are zip files, the name of one of the expected student source files (needed to find the submission in the zip file)
 * testmodule the name of the python module containing unit tests (without the '.py' extension)
 * modules a list of files to be copied into each student sub-directory before tests are run, this will probably include the test file and any required data files
-* expectzip should be True if the submissions are zip files that need to be unpacked
+* expectzip should be 'yes' if the submissions are zip files that need to be unpacked
 * csvname the name of the csv file to write the summary results to
 
 

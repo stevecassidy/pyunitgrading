@@ -8,6 +8,7 @@ import os, shutil
 
 UNRAR = '/usr/local/bin/unrar'
 TAR = '/usr/bin/tar'
+SEVENZ = '/usr/local/bin/7z'
 
 def parse_submission_name(fname):
     """Extract the student identifying info 
@@ -58,8 +59,11 @@ def unpack_submissions(zfile, targetdir, targetname=None, expectzip=False):
             os.makedirs(sdir)
         extracted = os.path.abspath(zf.extract(name, sdir))
         # check if this is a zip file
-        if expectzip and is_archive(extracted):
-            unpack_one(extracted, sdir)
+        if expectzip:
+            if is_archive(extracted):
+                unpack_one(extracted, sdir)
+            else:
+                problems.append("Not an archive file I recognise: " + extracted)
             unpacked.append(sid)
         elif targetname != None:
             # rename file to target name
@@ -72,12 +76,16 @@ def unpack_submissions(zfile, targetdir, targetname=None, expectzip=False):
     return (unpacked, problems)
     
 
+
+
+
+
 def is_archive(filename):
     """Test to see whether this is an archive file (zip, rar, tgz),
      return True if it is, False if not"""
 
     (base, ext) = os.path.splitext(filename)
-    return ext in ['.zip', '.rar', '.tgz']
+    return ext in ['.zip', '.rar', '.tgz', '.7z']
 
 
 
@@ -95,6 +103,9 @@ def unpack_one(subfile, sdir):
             problem = "Unable to unpack RAR file " + subfile 
     elif ext == '.tgz':
         if not untar(subfile, sdir):
+            problem = "Unable to unpack tar file " + subfile
+    elif ext == '.7z':
+        if not un7z(subfile, sdir):
             problem = "Unable to unpack tar file " + subfile
     else:
         status = False
@@ -150,6 +161,20 @@ def untar(tarfile, outdir):
     os.chdir(outdir)
     retcode = call(cmd)
     os.chdir(cwd)   
+    
+    return retcode >= 0
+    
+
+def un7z(file, outdir):
+    """Unpack a 7z file into the target directory outdir
+    Return True if it worked, False otherwise"""
+    
+    cmd = [SEVENZ, "x", "-y", file]
+    
+    cwd = os.getcwd()
+    os.chdir(outdir)
+    retcode = call(cmd)
+    os.chdir(cwd)
     
     return retcode >= 0
     

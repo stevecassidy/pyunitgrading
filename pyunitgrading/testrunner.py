@@ -29,6 +29,7 @@ def report_error(pid, message):
     print("\tError running tests:", message)
     ostream.write("Error running tests\n")
     ostream.write(message + "\n")
+    ostream.close()
 
 
 
@@ -43,8 +44,8 @@ def find_sourcedir(basedir, modulename):
     
     # if we don't find it, raise an error
     report_error(basedir, "Can't locate module %s" % modulename)
-    
-    return basedir
+
+    return None
 
 
 
@@ -77,7 +78,7 @@ class TestRunnerThread(threading.Thread):
         """Report an error, either an explicit message
         or just dump out crash info"""
         
-        print("\tError running test")
+        print("\tError running test: ",)
         self.ostream.write("Error running tests\n")
         if message != "":
             self.ostream.write(message + "\n")
@@ -89,6 +90,12 @@ class TestRunnerThread(threading.Thread):
 
 
     def run(self):
+        # if there is no source to load, we quit now
+        if self.sourcedir == None:
+            self.__report_error("Source file not found in submission")
+            self.ostream.close()
+            return
+            
         print("DIR", self.sourcedir)
         
         # get the python script to test from the given directory: add it to the path
@@ -99,15 +106,16 @@ class TestRunnerThread(threading.Thread):
         for modfile in os.listdir(self.sourcedir):
             if modfile.endswith('.py'):
                 modname, ext = os.path.splitext(modfile)
+                #print("add to reload queue: ", modname)
                 reloadmods.append(modname)
         
         # copy the test module file into the target dir
         for m in self.modules:
+            #print("COPYING: ", m, " to ", self.sourcedir)
             shutil.copy(m, self.sourcedir)
 
         try:
             os.chdir(self.sourcedir)
-            
             # reload any user modules
             for modname in reloadmods:
                 if modname in sys.modules:
@@ -139,9 +147,12 @@ def read_config(configfile):
     return a dictionary of config values"""
     
     r = dict()
-    config = configparser.SafeConfigParser()
+    config = configparser.ConfigParser()
     config.read(configfile)
 
+    # paths are resolved relative to the config file directory
+    configdir = os.path.dirname(configfile)
+    
     r['basedir'] = config.get('default', 'basedir')
     r['targetname'] = config.get('default', 'targetname', fallback=None)
     r['testmodule'] = config.get('default', 'testmodule')
@@ -152,12 +163,29 @@ def read_config(configfile):
     
     modules = config.get('default', 'modules')
     # we split modules on whitespace
-    r['modules'] = modules.split()
+    r['modules'] = [os.path.join(configdir, m) for m in modules.split()]
 
     r['csvname'] = config.get('default', 'csvname', fallback="results.csv")
     
     return r
     
+def run_tests_on_collection(dirlist, basedir, testmodule, targetname, modules, outputname):
+    """Run unit tests for each student directory in an unpacked directory
+    dirlist is a list of student submissions directories"""
+    
+    result = []
+    for sid in dirlist:
+        thr = TestRunnerThread(basedir, sid, testmodule, targetname, modules, outputname)
+        thr.start()
+        while thr.is_alive():
+            pass
+        #sid, testsRun, failures, errors, total = thr.result
+        
+        result.append(thr.result)
+
+    return result
+
+
 
 def process(zfile, configfile):
     """Unpack submissions and run the unit tests for each
@@ -171,15 +199,11 @@ def process(zfile, configfile):
     results.writerow(('SID', 'Tests', 'Failed', 'Errors', 'Total'))
 
     unpacked, problems = unpack_submissions(zfile, c['basedir'], c['targetname'], c['expectzip'])
+    
+    result = run_tests_on_collection(unpacked, c['basedir'], c['testmodule'], c['targetname'], c['modules'], c['outputname'])
 
-    for sid in unpacked:
-        thr = TestRunnerThread(c['basedir'], sid, c['testmodule'], c['targetname'], c['modules'], c['outputname'])
-        thr.start()
-        while thr.is_alive():
-            pass
-        sid, testsRun, failures, errors, total = thr.result
-
-        results.writerow((sid, testsRun, failures, errors, total))
+    for row in result:
+        results.writerow(row)
         
 
     print("Problem cases:\n")
