@@ -26,13 +26,13 @@ setup(
     long_description=readme + '\n\n' + history,
     author='Steve Cassidy',
     author_email='Steve.Cassidy@mq.edu.au',
-    url='https://github.com/stevecassidy/pyunitgrading',
+    url='https://bitbucket.org/mqcomp249/pyunitgrading',
     packages=[
         'pyunitgrading',
     ],
     package_dir={'pyunitgrading':
                  'pyunitgrading'},
-    scripts=['scripts/unpack.py', 'scripts/runtests.py'],
+    scripts=['scripts/unpack.py', 'scripts/runtests.py', 'scripts/prepare_feedback.py', 'scripts/prepare_moss.py'],
     include_package_data=True,
     install_requires=requirements,
     license="BSD",

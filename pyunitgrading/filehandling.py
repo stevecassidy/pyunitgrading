@@ -121,8 +121,6 @@ def unpack_one(subfile, sdir):
         # remove the archive if there were no problems
         os.unlink(subfile)
 
-    isolate_directory(sdir, "comp125", "GPSException.java")
-
 
 def unzip(zfile, outdir):
     """Unpack a zip file into the given output directory outdir
@@ -209,6 +207,23 @@ def isolate_directory(topdir, target, containing=None):
                         print("Problem isolating in ", dirpath)
             
 
-
+def gather_sourcefiles(topdir, targetfiles):
+    """Find the target files underneath topdir and move them into topdir,
+    remove everything else in topdir
+    targetfiles - a list of filenames"""    
+    
+    original = os.listdir(topdir)
+    for (dirpath, dirnames, filenames) in os.walk(topdir):
+        for filename in filenames:
+            if filename in targetfiles:
+                os.rename(os.path.join(dirpath, filename), os.path.join(topdir, filename))
+                
+    # remove the original top level directories and files
+    for d in original:
+        path = os.path.join(topdir, d)
+        if os.path.isdir(path):
+            shutil.rmtree(path)
+        else:
+            os.unlink(path)
     
     

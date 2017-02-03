@@ -1,0 +1,29 @@
+testHomePageListsPosts (alltests.Level2FunctionalTests)
+As a visitor to the site, when I load the home page I see a list of ... ok
+testHomePageListsPostsOrder (alltests.Level2FunctionalTests)
+As a visitor to the site, when I load the home page I see a list of ... ok
+testHomepage (alltests.Level2FunctionalTests)
+As a visitor to the site, when I load the ... ok
+testUserMentions (alltests.Level2FunctionalTests)
+As a visitor to the site, when I load the mentions ... ok
+testUserPage (alltests.Level2FunctionalTests)
+As a visitor to the site, when I load the page for a user I ... ok
+test_post_html (alltests.LevelAUnitTests)
+Test conversion of posts to HTML: tags and & ... ok
+test_post_html_links (alltests.LevelAUnitTests)
+More tests on conversion of posts: links ... ok
+test_post_html_mentions (alltests.LevelAUnitTests)
+Test conversion of @mentions in posts to HTML ... ok
+test_post_list (alltests.LevelAUnitTests)
+Test that post_list returns all posts ... ok
+test_post_list_limit (alltests.LevelAUnitTests)
+Test that post list works with the limit argument ... ok
+test_post_list_mentions (alltests.LevelAUnitTests)
+Test getting a list of posts mentioning a user ... ok
+test_post_list_user (alltests.LevelAUnitTests)
+Test that post_list works with a usernick argument ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 2.719s
+
+OK

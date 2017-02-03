@@ -1,0 +1,112 @@
+body {		
+	background-attachment: fixed;
+	background-image: url("psstback.jpg");
+	background-repeat: no-repeat;
+	background-position:right bottom;
+	font-family:sans-serif;
+}
+
+#container
+{
+	opacity:1;
+	margin: 0 auto;
+	width: 600px;
+}
+
+header
+{
+	background-image: url("psstHead.jpg");
+	background-repeat: no-repeat;
+	background-position:center;
+	padding: 20px;
+	height:200px;
+	width:600px;
+}
+
+#postid
+{
+    position: relative;
+    float :left;
+    width:25%;
+}
+
+#postcontent
+{
+    position: relative;
+    float :right;
+    width:75%;
+    text-align: center;
+    font-size: 105%;
+}
+
+#header h1 { margin: 0; }
+
+nav
+{
+	margin:20px;	
+	float: left;
+	width: 600px;
+	background:#df7401;
+	border: 2px solid;
+	border-color:#df7401;
+    	border-radius: 25px;
+	box-shadow: 10px 10px 5px #ffd27f;
+	
+}
+
+nav ul
+{
+	margin: 5px;
+	padding: 10px;
+}
+
+nav ul li
+{
+	list-style-type: none;
+	display: inline;
+	padding:5px;
+	
+}
+
+nav li a
+{	
+	display: block;
+	float: left;
+	padding:5px;
+	color:#fff;
+	text-decoration: none;
+	border-right: 1px solid#fff;
+}
+
+nav li a:hover { 
+	background-color:#FFF;
+	color:#df7401;
+}
+
+article
+{
+    position: relative;
+	width:580px;
+	height:125px;
+	padding:10px;
+	clear: left;
+	margin: 20px;
+	border: 2px solid;
+	border-color: #df7401;
+    	border-radius: 25px;
+	box-shadow: 10px 10px 5px #ffd27f;
+	background:#fff;
+}
+
+img {
+    width: 50%;
+    height: 50%;
+}
+
+footer
+{
+	background:#ccc;
+	text-align: right;
+	padding: 20px;
+	height: 1%;
+}

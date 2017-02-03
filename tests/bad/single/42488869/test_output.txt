@@ -1,0 +1,188 @@
+testHomePageListsPosts (alltests.Level2FunctionalTests)
+As a visitor to the site, when I load the home page I see a list of ... FAIL
+testHomePageListsPostsOrder (alltests.Level2FunctionalTests)
+As a visitor to the site, when I load the home page I see a list of ... FAIL
+testHomepage (alltests.Level2FunctionalTests)
+As a visitor to the site, when I load the ... FAIL
+testUserMentions (alltests.Level2FunctionalTests)
+As a visitor to the site, when I load the mentions ... ERROR
+testUserPage (alltests.Level2FunctionalTests)
+As a visitor to the site, when I load the page for a user I ... ERROR
+test_post_html (alltests.LevelAUnitTests)
+Test conversion of posts to HTML: tags and & ... ok
+test_post_html_links (alltests.LevelAUnitTests)
+More tests on conversion of posts: links ... FAIL
+test_post_html_mentions (alltests.LevelAUnitTests)
+Test conversion of @mentions in posts to HTML ... FAIL
+test_post_list (alltests.LevelAUnitTests)
+Test that post_list returns all posts ... ERROR
+test_post_list_limit (alltests.LevelAUnitTests)
+Test that post list works with the limit argument ... ERROR
+test_post_list_mentions (alltests.LevelAUnitTests)
+Test getting a list of posts mentioning a user ... ERROR
+test_post_list_user (alltests.LevelAUnitTests)
+Test that post_list works with a usernick argument ... ERROR
+
+======================================================================
+ERROR: testUserMentions (alltests.Level2FunctionalTests)
+As a visitor to the site, when I load the mentions
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "./alltests.py", line 229, in testUserMentions
+    response = self.app.get('/mentions/%s' % nick)
+  File "/Users/steve/virtualenvs/pyunit/lib/python3.4/site-packages/webtest/app.py", line 322, in get
+    expect_errors=expect_errors)
+  File "/Users/steve/virtualenvs/pyunit/lib/python3.4/site-packages/webtest/app.py", line 631, in do_request
+    self._check_status(status, res)
+  File "/Users/steve/virtualenvs/pyunit/lib/python3.4/site-packages/webtest/app.py", line 663, in _check_status
+    res)
+webtest.app.AppError: Bad response: 404 Not Found (not 200 OK or 3xx redirect for http://localhost/mentions/Contrary)
+
+    <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+    <html>
+        <head>
+            <title>Error: 404 Not Found</title>
+            <style type="text/css">
+              html {background-color: #eee; font-family: sans;}
+              body {background-color: #fff; border: 1px solid #ddd;
+                    padding: 15px; margin: 15px;}
+              pre {background-color: #eee; border: 1px solid #ddd; padding: 5px;}
+            </style>
+        </head>
+        <body>
+            <h1>Error: 404 Not Found</h1>
+            <p>Sorry, the requested URL <tt>&#039;http://localhost:80/mentions/Contrary&#039;</tt>
+               caused an error:</p>
+            <pre>Not found: &#039;/mentions/Contrary&#039;</pre>
+        </body>
+    </html>
+
+
+======================================================================
+ERROR: testUserPage (alltests.Level2FunctionalTests)
+As a visitor to the site, when I load the page for a user I
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "./alltests.py", line 201, in testUserPage
+    response = self.app.get('/users/%s' % nick)
+  File "/Users/steve/virtualenvs/pyunit/lib/python3.4/site-packages/webtest/app.py", line 322, in get
+    expect_errors=expect_errors)
+  File "/Users/steve/virtualenvs/pyunit/lib/python3.4/site-packages/webtest/app.py", line 631, in do_request
+    self._check_status(status, res)
+  File "/Users/steve/virtualenvs/pyunit/lib/python3.4/site-packages/webtest/app.py", line 663, in _check_status
+    res)
+webtest.app.AppError: Bad response: 404 Not Found (not 200 OK or 3xx redirect for http://localhost/users/Bobalooba)
+
+    <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+    <html>
+        <head>
+            <title>Error: 404 Not Found</title>
+            <style type="text/css">
+              html {background-color: #eee; font-family: sans;}
+              body {background-color: #fff; border: 1px solid #ddd;
+                    padding: 15px; margin: 15px;}
+              pre {background-color: #eee; border: 1px solid #ddd; padding: 5px;}
+            </style>
+        </head>
+        <body>
+            <h1>Error: 404 Not Found</h1>
+            <p>Sorry, the requested URL <tt>&#039;http://localhost:80/users/Bobalooba&#039;</tt>
+               caused an error:</p>
+            <pre>Not found: &#039;/users/Bobalooba&#039;</pre>
+        </body>
+    </html>
+
+
+======================================================================
+ERROR: test_post_list (alltests.LevelAUnitTests)
+Test that post_list returns all posts
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "./alltests.py", line 32, in test_post_list
+    self.assertEqual(len(self.posts), len(posts))
+TypeError: object of type 'NoneType' has no len()
+
+======================================================================
+ERROR: test_post_list_limit (alltests.LevelAUnitTests)
+Test that post list works with the limit argument
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "./alltests.py", line 56, in test_post_list_limit
+    self.assertEqual(3, len(posts))
+TypeError: object of type 'NoneType' has no len()
+
+======================================================================
+ERROR: test_post_list_mentions (alltests.LevelAUnitTests)
+Test getting a list of posts mentioning a user
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "./alltests.py", line 75, in test_post_list_mentions
+    self.assertEqual(2, len(posts))
+TypeError: object of type 'NoneType' has no len()
+
+======================================================================
+ERROR: test_post_list_user (alltests.LevelAUnitTests)
+Test that post_list works with a usernick argument
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "./alltests.py", line 40, in test_post_list_user
+    self.assertEqual(3, len(posts))
+TypeError: object of type 'NoneType' has no len()
+
+======================================================================
+FAIL: testHomePageListsPosts (alltests.Level2FunctionalTests)
+As a visitor to the site, when I load the home page I see a list of
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "./alltests.py", line 172, in testHomePageListsPosts
+    self.assertIn(word, result)
+AssertionError: 'w' not found in <200 OK text/html body=b'<!DOCTYP...l>\n'/244>
+
+======================================================================
+FAIL: testHomePageListsPostsOrder (alltests.Level2FunctionalTests)
+As a visitor to the site, when I load the home page I see a list of
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "./alltests.py", line 187, in testHomePageListsPostsOrder
+    self.assertNotEqual(-1, loc, "date string '%s' not found in page" % post[1])
+AssertionError: -1 == -1 : date string '2015-02-20 01:45:06' not found in page
+
+======================================================================
+FAIL: testHomepage (alltests.Level2FunctionalTests)
+As a visitor to the site, when I load the
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "./alltests.py", line 160, in testHomepage
+    self.assertIn("Welcome to Psst", response)
+AssertionError: 'Welcome to Psst' not found in <200 OK text/html body=b'<!DOCTYP...l>\n'/244>
+
+======================================================================
+FAIL: test_post_html_links (alltests.LevelAUnitTests)
+More tests on conversion of posts: links
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "./alltests.py", line 108, in test_post_html_links
+    self.assertEqual("&lt;p&gt;Hello World <a href='http://example.org/'>http://example.org/</a> is it&lt;/p&gt;", html)
+AssertionError: "&lt;p&gt;Hello World <a href='http://exa[46 chars]&gt;" != '&lt;p&gt;Hello World <a href="http://exa[46 chars]&gt;'
+- &lt;p&gt;Hello World <a href='http://example.org/'>http://example.org/</a> is it&lt;/p&gt;
+?                              ^                   ^
++ &lt;p&gt;Hello World <a href="http://example.org/">http://example.org/</a> is it&lt;/p&gt;
+?                              ^                   ^
+
+
+======================================================================
+FAIL: test_post_html_mentions (alltests.LevelAUnitTests)
+Test conversion of @mentions in posts to HTML
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "./alltests.py", line 122, in test_post_html_mentions
+    self.assertEqual("&lt;p&gt;Hello World <a href='/users/Bobolooba'>@Bobolooba</a>&lt;/p&gt;", html)
+AssertionError: "&lt;p&gt;Hello World <a href='/users/Bobolooba'>@Bobolooba</a>&lt;/p&gt;" != '&lt;p&gt;Hello World @Bobolooba&lt;/p&gt;'
+- &lt;p&gt;Hello World <a href='/users/Bobolooba'>@Bobolooba</a>&lt;/p&gt;
++ &lt;p&gt;Hello World @Bobolooba&lt;/p&gt;
+
+
+----------------------------------------------------------------------
+Ran 12 tests in 1.622s
+
+FAILED (failures=5, errors=6)
