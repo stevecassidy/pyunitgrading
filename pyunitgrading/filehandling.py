@@ -11,18 +11,18 @@ TAR = '/usr/bin/tar'
 SEVENZ = '/usr/local/bin/7z'
 
 def parse_submission_name(fname):
-    """Extract the student identifying info 
+    """Extract the student identifying info
     from the submission name, return a tuple
     (id, pid) where
      id - the student id
      pid - the student Participant ID (unique id for this submission)
-     
+
      The pid cross references to the grading spreadsheet downloadable from iLearn"""
 
 
     # eg 42873711_10413_assignsubmission_file_workshop1.py
     #    43696864_5132128_assignsubmission_file_43696864_GPSTracks.zip
-    
+
     pattern = r'([^_]+)_([0-9]+)_.*'
 
     match = re.match(pattern, fname)
@@ -74,7 +74,7 @@ def unpack_submissions(zfile, targetdir, targetname=None, expectzip=False):
             unpacked.append(sid)
 
     return (unpacked, problems)
-    
+
 
 
 
@@ -92,7 +92,7 @@ def is_archive(filename):
 def unpack_one(subfile, sdir):
     """Unpack a single file submitted by a student that might be
      a zipfile but could also be a tar or rar file (or none of these)"""
-    
+
     problem = ""
     (base, ext) = os.path.splitext(subfile)
     if ext == '.zip':
@@ -100,7 +100,7 @@ def unpack_one(subfile, sdir):
             problem = "Unable to unzip file " + subfile
     elif ext == '.rar':
         if not unrar(subfile, sdir):
-            problem = "Unable to unpack RAR file " + subfile 
+            problem = "Unable to unpack RAR file " + subfile
     elif ext == '.tgz':
         if not untar(subfile, sdir):
             problem = "Unable to unpack tar file " + subfile
@@ -110,12 +110,12 @@ def unpack_one(subfile, sdir):
     else:
         status = False
         problem = "Unknown file extension: " + subfile
-    
+
     if problem != "":
         h = open('unpack_problems.txt', 'w')
         h.write(sdir + ": " + problem)
         h.close()
-        
+
         print(problem)
     else:
         # remove the archive if there were no problems
@@ -132,54 +132,56 @@ def unzip(zfile, outdir):
         return True
     except zipfile.BadZipfile:
         return False
-        
+    except NotImplementedError:
+        return False
+
 
 from subprocess import call
 
 def unrar(rarfile, outdir):
     """Unpack a RAR file into the target directory outdir
     Return True if it worked, False otherwise"""
-    
+
     cmd = [UNRAR, "x", "-idcdpq", "-y", rarfile]
-    
+
     cwd = os.getcwd()
     os.chdir(outdir)
     retcode = call(cmd)
     os.chdir(cwd)
-    
+
     return retcode >= 0
-        
+
 def untar(tarfile, outdir):
     """Unpack a tar file into the target directory outdir
     Return True if it worked, False otherwise"""
-    
+
     cmd = [TAR, "xzf", tarfile]
-    
+
     cwd = os.getcwd()
     os.chdir(outdir)
     retcode = call(cmd)
-    os.chdir(cwd)   
-    
+    os.chdir(cwd)
+
     return retcode >= 0
-    
+
 
 def un7z(file, outdir):
     """Unpack a 7z file into the target directory outdir
     Return True if it worked, False otherwise"""
-    
+
     cmd = [SEVENZ, "x", "-y", file]
-    
+
     cwd = os.getcwd()
     os.chdir(outdir)
     retcode = call(cmd)
     os.chdir(cwd)
-    
+
     return retcode >= 0
-    
-    
+
+
 def isolate_directory(topdir, target, containing=None):
     """Find the directory named 'target' underneath 'topdir'
-    and make it the top level directory inside topdir. 
+    and make it the top level directory inside topdir.
     If containing is not None, the target directory should contain a file
     with this name.
     Use for finding a package directory inside an eclipse export
@@ -193,7 +195,7 @@ def isolate_directory(topdir, target, containing=None):
                 if containing != None and containing in contained:
                     try:
                         os.rename(os.path.join(dirpath, dirname), os.path.join(topdir, dirname))
-                
+
                         # remove the original top level directories and files
                         for d in subdirs:
                             path = os.path.join(topdir, d)
@@ -201,29 +203,27 @@ def isolate_directory(topdir, target, containing=None):
                                 shutil.rmtree(path)
                             else:
                                 os.unlink(path)
-                    
+
                         return
                     except:
                         print("Problem isolating in ", dirpath)
-            
+
 
 def gather_sourcefiles(topdir, targetfiles):
     """Find the target files underneath topdir and move them into topdir,
     remove everything else in topdir
-    targetfiles - a list of filenames"""    
-    
+    targetfiles - a list of filenames"""
+
     original = os.listdir(topdir)
     for (dirpath, dirnames, filenames) in os.walk(topdir):
         for filename in filenames:
             if filename in targetfiles:
                 os.rename(os.path.join(dirpath, filename), os.path.join(topdir, filename))
-                
+
     # remove the original top level directories and files
     for d in original:
         path = os.path.join(topdir, d)
         if os.path.isdir(path):
             shutil.rmtree(path)
-        else:
+        elif not os.path.basename(path) in targetfiles:
             os.unlink(path)
-    
-    
