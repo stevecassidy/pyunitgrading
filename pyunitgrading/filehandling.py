@@ -34,6 +34,22 @@ def parse_submission_name(fname):
         raise Exception("Can't parse identifier in name %s" % fname)
 
 
+def scan_or_unpack_submissions(zfile, targetdir, targetname=None, expectzip=False):
+    """Given a zip file either unpack it or scan an already
+    unpacked directory.
+    Return a tuple of two lists (unpacked, problems)
+    where unpacked is a list of student ids that were ok
+    and problems are student ids that are not ok
+    """
+
+    if os.path.exists(targetdir):
+        # scan targetdir for submissions
+        submissions = os.listdir(targetdir)
+        return submissions, []
+    else:
+        return unpack_submissions(zfile, targetdir, targetname, expectzip)
+
+
 def unpack_submissions(zfile, targetdir, targetname=None, expectzip=False):
     """Given a zip file, unpack the submissions into a
     target directory with one directory per student named
@@ -61,7 +77,10 @@ def unpack_submissions(zfile, targetdir, targetname=None, expectzip=False):
         # check if this is a zip file
         if expectzip:
             if is_archive(extracted):
-                unpack_one(extracted, sdir)
+                try:
+                    unpack_one(extracted, sdir)
+                except Exception:
+                    problems.append("Exception in handling extraction of " + extracted)
             else:
                 problems.append("Not an archive file I recognise: " + extracted)
             unpacked.append(sid)
@@ -96,7 +115,8 @@ def unpack_one(subfile, sdir):
     problem = ""
     (base, ext) = os.path.splitext(subfile)
     if ext == '.zip':
-        if not unzip(subfile, sdir):
+        # use 7z for zip files since it handles more of them
+        if not un7z(subfile, sdir):
             problem = "Unable to unzip file " + subfile
     elif ext == '.rar':
         if not unrar(subfile, sdir):

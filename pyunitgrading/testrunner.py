@@ -21,7 +21,7 @@ else:
 import subprocess
 import datetime
 
-from pyunitgrading.filehandling import unpack_submissions
+from pyunitgrading.filehandling import scan_or_unpack_submissions
 
 
 def report_error(pid, message):
@@ -95,7 +95,6 @@ class TestRunner(multiprocessing.Process):
             self.ostream.write(str(info))
             traceback.print_exc(None, self.ostream)
 
-
     def run(self):
         # if there is no source to load, we quit now
         if self.sourcedir == None:
@@ -141,7 +140,7 @@ class TestRunner(multiprocessing.Process):
             # put the result onto the queue to send back to the caller
             self.queue.put(self.result)
 
-        except:
+        except Exception:
             self.__report_error()
             self.queue.put((self.sid, 0, 0, 0, 0, "Error running tests"))
         finally:
@@ -178,6 +177,7 @@ def read_config(configfile):
 
     return r
 
+
 def run_tests_on_collection(dirlist, basedir, testmodule, targetname, modules, outputname):
     """Run unit tests for each student directory in an unpacked directory
     dirlist is a list of student submissions directories"""
@@ -199,12 +199,11 @@ def run_tests_on_collection(dirlist, basedir, testmodule, targetname, modules, o
         if not queue.empty():
             testresult = queue.get()
         else:
-            testreult = (0,0,0,0,0)
+            testresult = (sid,0,0,0,0)
         print("RESULT: ", sid, testresult)
         result.append(testresult)
 
     return result
-
 
 
 def process(zfile, configfile):
@@ -218,13 +217,12 @@ def process(zfile, configfile):
 
     results.writerow(('SID', 'Tests', 'Failed', 'Errors', 'Total'))
 
-    unpacked, problems = unpack_submissions(zfile, c['basedir'], c['targetname'], c['expectzip'])
+    unpacked, problems = scan_or_unpack_submissions(zfile, c['basedir'], c['targetname'], c['expectzip'])
 
     result = run_tests_on_collection(unpacked, c['basedir'], c['testmodule'], c['targetname'], c['modules'], c['outputname'])
 
     for row in result:
         results.writerow(row)
-
 
     print("Problem cases:\n")
     for sid in problems:
