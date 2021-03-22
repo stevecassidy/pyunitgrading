@@ -84,9 +84,10 @@ def unpack_submissions(zfile, csvfile, targetdir, targetname=None, expectzip=Fal
         if student_name in student_map:
             sid = student_map[student_name]
         else:
-            print("Name not found: ", student_name)
+            print("\n\n--------------------\nName not found: ", student_name)
             print("Please edit spreadsheet so that this name matches correctly and re-run")
-            break
+            print("\n\n--------------------\n")
+            return [], ['fatal']
 
         sdir = os.path.join(targetdir, sid)
         if not os.path.exists(sdir):
