@@ -5,6 +5,7 @@ Code for unpacking zip files from iLearn
 import zipfile
 import re
 import os, shutil
+import csv
 
 UNRAR = '/usr/local/bin/unrar'
 TAR = '/usr/bin/tar'
@@ -34,7 +35,7 @@ def parse_submission_name(fname):
         raise Exception("Can't parse identifier in name %s" % fname)
 
 
-def scan_or_unpack_submissions(zfile, targetdir, targetname=None, expectzip=False):
+def scan_or_unpack_submissions(zfile, csvfile, targetdir, targetname=None, expectzip=False):
     """Given a zip file either unpack it or scan an already
     unpacked directory.
     Return a tuple of two lists (unpacked, problems)
@@ -47,11 +48,12 @@ def scan_or_unpack_submissions(zfile, targetdir, targetname=None, expectzip=Fals
         submissions = os.listdir(targetdir)
         return submissions, []
     else:
-        return unpack_submissions(zfile, targetdir, targetname, expectzip)
+        return unpack_submissions(zfile, csvfile, targetdir, targetname, expectzip)
 
 
-def unpack_submissions(zfile, targetdir, targetname=None, expectzip=False):
-    """Given a zip file, unpack the submissions into a
+def unpack_submissions(zfile, csvfile, targetdir, targetname=None, expectzip=False):
+    """Given a zip file, and a csv file from iLearn, 
+    unpack the submissions into a
     target directory with one directory per student named
     for their studentid
     rename the submitted file to targetname if supplied unless it's a zip file
@@ -63,16 +65,36 @@ def unpack_submissions(zfile, targetdir, targetname=None, expectzip=False):
     zf = zipfile.ZipFile(zfile)
     names = zf.namelist()
 
+    student_map = dict()
+    with open(csvfile, encoding='utf-8-sig') as fd:
+        reader = csv.DictReader(fd)
+        for row in reader:
+            student_map[row['Full name']] = row['ID number']
+
     unpacked = []
     problems = []
     for name in names:
         # names are like:
-        #   42873711_10413_assignsubmission_file_workshop1.py
+        #   
+        #   Matthew Zhang_6392434_assignsubmission_file_/45594295.zip
         #
-        (sid, pid) = parse_submission_name(name)
+        #  (name)_(pid)_(other stuff) 
+
+        (student_name, pid) = parse_submission_name(name)
+        if student_name in student_map:
+            sid = student_map[student_name]
+        else:
+            print("Name not found: ", student_name)
+            print("Please edit spreadsheet so that this name matches correctly and re-run")
+            break
+
         sdir = os.path.join(targetdir, sid)
         if not os.path.exists(sdir):
             os.makedirs(sdir)
+        else:
+            print("Already exists", sdir)
+            continue
+
         extracted = os.path.abspath(zf.extract(name, sdir))
         # check if this is a zip file
         if expectzip:
@@ -90,13 +112,9 @@ def unpack_submissions(zfile, targetdir, targetname=None, expectzip=False):
             unpacked.append(sid)
         else:
             # we do nothing
-            unpacked.append(sid)
+            unpacked.append(student_name)
 
     return (unpacked, problems)
-
-
-
-
 
 
 def is_archive(filename):
@@ -105,7 +123,6 @@ def is_archive(filename):
 
     (base, ext) = os.path.splitext(filename)
     return ext in ['.zip', '.rar', '.tgz', '.7z']
-
 
 
 def unpack_one(subfile, sdir):
