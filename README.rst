@@ -25,16 +25,21 @@ If the zip file contains archive files they are unpacked within the student's su
 
 Usage::
 
-    usage: unpack.py [-h] [--expectzip EXPECTZIP] [--targetname TARGETNAME] zipfile targetdir
+    usage: unpack.py [-h] [--expectzip] [--targetname TARGETNAME]
+                    zipfile csvfile targetdir
+
+    unpack an iLearn zip file
 
     positional arguments:
       zipfile               downloaded zip file
+      csvfile               csv grading spreadsheet from iLearn
       targetdir             directory to store unpacked files
 
     optional arguments:
-      -h, --help                show this help message and exit
-      --expectzip               does the zip file contain more zip files
-      --targetname TARGETNAME   name for student submission files
+      -h, --help            show this help message and exit
+      --expectzip           does the zip file contain more zip files
+      --targetname TARGETNAME
+                            name for student submission files
 
 runtests.py
 ===========
